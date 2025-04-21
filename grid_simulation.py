@@ -1,6 +1,7 @@
 import pygame
 import json
 import torch
+import imageio
 import numpy as np
 import os
 from pygame.locals import *
@@ -80,6 +81,9 @@ def run_simulation():
     path = set()
     resources_set = set(adjusted_resources)
 
+    # --- Initialize video recording ---
+    frames = []
+
     while running:
         screen.fill(GREY)
 
@@ -118,6 +122,14 @@ def run_simulation():
         pygame.draw.rect(screen, BLUE, agent_rect)
 
         pygame.display.flip()
+
+        # --- Capture frame for video ---
+        frame_str = pygame.image.tostring(screen, 'RGB')
+        frame_surf = pygame.image.fromstring(frame_str, (WIDTH, HEIGHT), 'RGB')
+        frame_array = pygame.surfarray.array3d(frame_surf)
+        frame_array = frame_array.swapaxes(0, 1)  # Convert to (H, W, C)
+        frames.append(frame_array)
+
         clock.tick(5)
 
         # Agent decision
@@ -140,7 +152,13 @@ def run_simulation():
             pygame.time.wait(1500)
             running = False
 
+    # --- Save video ---
+    output_path = "simulation_output.mp4"
+    imageio.mimsave(output_path, frames, fps=5)
+    print(f"Video saved to {output_path}")
+
     pygame.quit()
+
 
 if __name__ == "__main__":
     run_simulation()
