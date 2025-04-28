@@ -38,7 +38,7 @@ class DQN(torch.nn.Module):
         x = self.relu(self.fc1(x))
         return self.fc2(x)
 
-model_path = "grid_model.pth"  # <- Path to the .pth file
+model_path = "model1.pth"  # <- Path to the .pth file
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 state_size = GRID_SIZE_X * GRID_SIZE_Y
 action_size = 2  # 0: UP, 1: RIGHT
